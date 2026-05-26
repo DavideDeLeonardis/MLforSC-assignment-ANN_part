@@ -1,4 +1,4 @@
-# ANN System Identification — Unbalanced Disc (5SC28)
+# ANN System Identification — Unbalanced Disc
 
 ANN part of the design assignment: identify the dynamics of the Unbalanced Disc
 (input `u` = motor voltage in [-3, +3] V, output `θ` = disk angle in rad),
