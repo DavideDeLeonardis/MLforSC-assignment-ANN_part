@@ -1,1 +1,14 @@
 .DS_Store
+/.obsidian
+TEORIA_ANN*
+
+# Jupyter
+.ipynb_checkpoints/
+.virtual_documents/
+
+# Python venv
+ml-control-venv/
+
+# Python cache
+__pycache__/
+*.pyc
