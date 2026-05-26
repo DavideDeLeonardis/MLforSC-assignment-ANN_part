@@ -1,0 +1,14 @@
+So summary is that I had to teach a neural network how the small pendulum disc moves. The input is the motor voltage u, the output is the disc angle θ. The lecturer didn't want us to use the angular velocity ω, so the network had to figure out by itself how fast the disc was moving, just by looking at how the angle changed over time.
+
+I built two models. The first one is simple, a small MLP that takes the past few values of u and θ and predicts the next angle (NARX). 
+The second one is more powerful, an LSTM, a recurrent network that keeps an internal memory of the system's state. Before getting to the LSTM I also tried the NOE (same NARX network but trained while feeding its own predictions back) but results were unsatisfying.
+
+Before training, I made two preparation choices. I turned the angle into a (sin θ, cos θ) pair, so the network never sees a sudden jump when the angle goes past ±π. Also I scaled u by 3 (saturation voltage), so it stays between -1 and +1.
+
+For the NARX (two hidden layers, 64 units each), I had to choose how many past values to feed in. I trained 16 versions of the NARX with different lag combinations. 
+At first I picked the best one based on one-step-ahead prediction. But when I checked how each model behaved in free-run (where the network has to feed its own predictions back as input) I noticed that the best for prediction was actually a poor choice for free-run. So I re-ranked everything using both metrics and picked (n_a=8, n_b=8), which is good at both.
+
+The LSTM is trained differently: I unroll it in time and let it use its own predictions as input during training, so it learns to be stable in free-run. I tried three sizes and the best one was a 2-layer LSTM with 128 hidden units.
+
+Results on validation data: the simple NARX gets about 0.4° error in prediction and 7° in free-run (great at one step prediction)
+The LSTM gives up a bit of prediction accuracy (1.5°) but is much better in free-run simulation (2.2°), close to the strong reference baseline from the repo.
